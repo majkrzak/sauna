@@ -15,8 +15,10 @@ newtype Word = Word (Quintuple Letter)
 newtype Dictionary = Dictionary [Word]
 
 data Color = Black | Gray | Yellow | Green
+  deriving Eq
 
 newtype Response = Response (Quintuple Color)
+  deriving Eq
 
 instance Show Letter where
   show A = "A"

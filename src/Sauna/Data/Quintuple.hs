@@ -1,7 +1,7 @@
 module Sauna.Data.Quintuple where
 
 newtype Quintuple t = Quintuple (t, t, t, t, t)
-  deriving Functor
+  deriving (Functor, Eq)
 
 instance Foldable Quintuple where
   foldMap f (Quintuple (q1,q2,q3,q4,q5)) = f q1 <>f q2 <>f q3 <>f q4 <>f q5

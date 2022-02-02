@@ -7,6 +7,7 @@ import Sauna.Data
 import Sauna.Utils
 
 import Prelude hiding (Word)
+
 import System.IO (hFlush, stdout)
 
 main :: IO ()
@@ -18,7 +19,10 @@ main = do
       print word
       hFlush stdout
       response::Response <- read <$> getLine
-      loop $ update state word response
+      if response /= (Response $ pure Green) then
+        loop $ update state word response
+      else
+        loop initialState
 
 
 
