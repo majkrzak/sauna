@@ -1,0 +1,43 @@
+name:                sauna
+version:             0.0.0.0
+github:              "majkrzak/sauna"
+license:             ISC
+author:              "Piotr Majkrzak"
+
+dependencies:
+- base >= 4.7 && < 5
+- file-embed
+- bytestring
+- utf8-string
+
+default-extensions:
+- RecordWildCards
+- LambdaCase
+- TemplateHaskell
+- DeriveFunctor
+- GeneralizedNewtypeDeriving
+
+library:
+  source-dirs: src
+
+executables:
+  sauna-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - sauna
+
+tests:
+  sauna-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - sauna
