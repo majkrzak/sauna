@@ -8,13 +8,14 @@ import Sauna.Utils
 
 import Prelude hiding (Word, init)
 
-import System.IO (hFlush, stdout)
+import System.IO (hFlush, stdout, hPutStrLn, stderr)
 
 main :: IO ()
 main = do
   loop init
   where
     loop state = do
+      hPutStrLn stderr (show state)
       let word = next state
       print word
       hFlush stdout

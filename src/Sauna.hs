@@ -1,4 +1,6 @@
 
+{-# LANGUAGE NamedFieldPuns #-}
+
 module Sauna where
 import Prelude hiding (Word, words, init)
 
@@ -86,8 +88,10 @@ dictionary = read $ toString $(embedFile "dict.txt")
 -- Helpers
 ----------
 
+type WordFilter = Word -> Bool
+
 -- | Filters Words contains all the Letters.
-presentFilter :: [Letter] -> Word -> Bool
+presentFilter :: [Letter] -> WordFilter
 presentFilter alphabet word = coverage alphabet $ toList $ unwrap word
   where
     coverage :: [Letter] -> [Letter] -> Bool
@@ -95,11 +99,11 @@ presentFilter alphabet word = coverage alphabet $ toList $ unwrap word
     coverage [] _ = True
 
 -- | Filter Words matching options.
-optionsFilter :: Quintuple [Letter] -> Word -> Bool
-optionsFilter options word = all (uncurry elem) (liftA2 (,) (unwrap word) options) 
+optionsFilter :: Quintuple [Letter] -> WordFilter
+optionsFilter options word = all (uncurry elem) (liftA2 (,) (unwrap word) options)
 
 -- | Filters possible solutions.
-solutionFilter :: State -> Word -> Bool
+solutionFilter :: State -> WordFilter
 solutionFilter State{..} word = presentFilter present  word && optionsFilter options word
 
 -- | Creates minimal alphabet covering given dictionary.
@@ -110,7 +114,7 @@ dictionaryAlphabet (Dictionary (word:words)) = nub $ union word' (dictionaryAlph
 dictionaryAlphabet (Dictionary []) = []
 
 -- | Filter words over given alphabet.
-alphabetFilter :: [Letter] -> Word -> Bool
+alphabetFilter :: [Letter] -> WordFilter
 alphabetFilter alphabet word = word' == word' `intersect` alphabet
   where
     word' = toList $ unwrap word
@@ -126,16 +130,17 @@ complexFilter word = 5 == length (nub word')
 ------
 
 init :: State
-init = State options' present'
+init = State options' present' unused'
   where
     options' = pure [A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,Aumlaut,Oumlaut]
     present' = []
+    unused' = [A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,Aumlaut,Oumlaut]
 
 next :: State -> Word
-next state = let
+next state@State{unused} = let
     solutionDictionary = wrap $ filter (solutionFilter state) $ unwrap dictionary
     alphabet = dictionaryAlphabet solutionDictionary
-    coverageDictionary = wrap $ filter (alphabetFilter alphabet) $ unwrap dictionary
+    coverageDictionary = wrap $ filter (alphabetFilter (alphabet `intersect` unused)) $ unwrap dictionary
     coverageDictionary5 = wrap $ filter complexFilter $ unwrap coverageDictionary
   in head $ unwrap coverageDictionary5 <> unwrap solutionDictionary
 
@@ -144,7 +149,7 @@ update
  State {..}
  word
  response
- = State options' present'
+ = State options' present' unused'
  where
    options' :: Quintuple [Letter]
    options' = fmap ( \case
@@ -158,6 +163,7 @@ update
       (letter, Yellow) -> [letter]
       (_,_) -> []
     ) (liftA2 (,) (unwrap word) (unwrap response))
+   unused' = unused \\ toList (unwrap word)
    letters color = foldMap ( \(letter, color') -> [letter | color == color'] ) (liftA2 (,) (unwrap word) (unwrap response))
    greens = letters Green
    blacks = letters Black

@@ -9,5 +9,7 @@ import Data.Quintuple (Quintuple)
 data State = State
   { options :: Quintuple [Letter]
   , present :: [Letter]
+  , unused :: [Letter]
   }
+  deriving Show
 
