@@ -112,11 +112,12 @@ alphabetFilter alphabet word = word' == word' `intersect` alphabet
   where
     word' = toList $ unwrap word
 
--- | Filters words containing 5 diferent letters.
-complexFilter :: WordFilter
-complexFilter word = 5 == length (nub word')
+-- | Filters words containing n-diferent letters.
+lengthFilter :: Int -> WordFilter
+lengthFilter n word = n == length (nub word')
   where
     word' = toList $ unwrap word
+
 
 --------
 -- Utils
@@ -145,8 +146,10 @@ next state@State{unused} = let
     solutionDictionary = wrap $ filter (solutionFilter state) $ unwrap dictionary
     alphabet = dictionaryAlphabet solutionDictionary
     coverageDictionary = wrap $ filter (alphabetFilter (alphabet `intersect` unused)) $ unwrap dictionary
-    coverageDictionary5 = wrap $ filter complexFilter $ unwrap coverageDictionary
-  in head $ unwrap coverageDictionary5 <> unwrap solutionDictionary
+    coverageDictionary5 = wrap $ filter (lengthFilter 5) $ unwrap coverageDictionary
+    coverageDictionary4 = wrap $ filter (lengthFilter 4) $ unwrap coverageDictionary
+    coverageDictionary3 = wrap $ filter (lengthFilter 3) $ unwrap coverageDictionary
+  in head $ unwrap coverageDictionary5 <> unwrap coverageDictionary4 <> unwrap coverageDictionary3 <> unwrap solutionDictionary
 
 update :: State -> Word -> Response -> State
 update
