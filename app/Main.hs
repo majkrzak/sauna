@@ -8,14 +8,17 @@ import Sauna.Utils
 
 import Prelude hiding (Word, init)
 
-import System.IO (hFlush, stdout, hPutStrLn, stderr)
+import System.IO (hFlush, stdout, hPutStrLn, stderr,hPutStr, hPrint)
+import Data.Wrapper (unwrap)
+import Sauna.Data.State (present, options, State)
 
 main :: IO ()
 main = do
   loop init
   where
     loop state = do
-      hPutStrLn stderr (show state)
+      hPrint stderr state
+      stats state
       let word = next state
       print word
       hFlush stdout
@@ -27,3 +30,14 @@ main = do
 
 
 
+stats :: State -> IO ()
+stats state = do
+  hPutStr stderr "solutionFilter: :"
+  hPrint stderr $ length $ filter (solutionFilter state) $ unwrap dictionary
+  hPrint stderr $ filter (solutionFilter state) $ unwrap dictionary
+  hPutStr stderr "presentFilter:  :"
+  hPrint stderr $ length $ filter (presentFilter $ present state) $ unwrap dictionary
+  hPrint stderr $ filter (presentFilter $ present state) $ unwrap dictionary
+  hPutStr stderr "optionsFilter:  :"
+  hPrint stderr $ length $ filter (optionsFilter $ options state) $ unwrap dictionary
+  hPrint stderr $ filter (optionsFilter $ options state) $ unwrap dictionary

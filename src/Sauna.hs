@@ -85,7 +85,7 @@ dictionary = read $ toString $(embedFile "dict.txt")
 
 
 ----------
--- Helpers
+-- Filters
 ----------
 
 type WordFilter = Word -> Bool
@@ -106,13 +106,6 @@ optionsFilter options word = all (uncurry elem) (liftA2 (,) (unwrap word) option
 solutionFilter :: State -> WordFilter
 solutionFilter State{..} word = presentFilter present  word && optionsFilter options word
 
--- | Creates minimal alphabet covering given dictionary.
-dictionaryAlphabet :: Dictionary -> [Letter]
-dictionaryAlphabet (Dictionary (word:words)) = nub $ union word' (dictionaryAlphabet (wrap words))
-  where
-    word' = toList $ unwrap word
-dictionaryAlphabet (Dictionary []) = []
-
 -- | Filter words over given alphabet.
 alphabetFilter :: [Letter] -> WordFilter
 alphabetFilter alphabet word = word' == word' `intersect` alphabet
@@ -120,10 +113,21 @@ alphabetFilter alphabet word = word' == word' `intersect` alphabet
     word' = toList $ unwrap word
 
 -- | Filters words containing 5 diferent letters.
-complexFilter :: Word -> Bool
+complexFilter :: WordFilter
 complexFilter word = 5 == length (nub word')
   where
     word' = toList $ unwrap word
+
+--------
+-- Utils
+--------
+
+-- | Creates minimal alphabet covering given dictionary.
+dictionaryAlphabet :: Dictionary -> [Letter]
+dictionaryAlphabet (Dictionary (word:words)) = nub $ union word' (dictionaryAlphabet (wrap words))
+  where
+    word' = toList $ unwrap word
+dictionaryAlphabet (Dictionary []) = []
 
 ------
 -- API
@@ -155,7 +159,7 @@ update
    options' = fmap ( \case
       (letter, Green, _) -> [letter]
       (_, _, [letter]) -> [letter]
-      (letter, _, option) -> (option \\ ((blacks `union` greens) \\ yellows)) \\ [letter]
+      (letter, _, option) -> (option \\ ((blacks) \\ yellows)) \\ [letter]
      ) (liftA3 (,,) (unwrap word) (unwrap response) options)
    present' = present <> (present'' \\ present)
    present'' = foldMap ( \case
