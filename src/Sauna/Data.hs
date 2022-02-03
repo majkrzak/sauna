@@ -1,11 +1,15 @@
 
 
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+
 module Sauna.Data where
 
-import Sauna.Data.Quintuple
+import Data.Quintuple
 
 import Prelude hiding (Word)
 import Data.Foldable (toList)
+import Data.Wrapper
 
 data Letter = A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z|Aumlaut|Oumlaut
   deriving Eq
@@ -144,3 +148,9 @@ instance Read Response where
                         [(x, "")] -> Just x
                         _ -> Nothing
   readsPrec _ _ = []
+
+
+instance Wrapper Dictionary [Word]
+instance Wrapper Word (Quintuple Letter)
+instance Wrapper Response (Quintuple Color)
+

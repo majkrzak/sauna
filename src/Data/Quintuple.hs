@@ -1,4 +1,4 @@
-module Sauna.Data.Quintuple where
+module Data.Quintuple where
 
 newtype Quintuple t = Quintuple (t, t, t, t, t)
   deriving (Functor, Eq)

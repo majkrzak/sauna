@@ -17,6 +17,7 @@ default-extensions:
 - DeriveFunctor
 - GeneralizedNewtypeDeriving
 - OverloadedStrings
+- ScopedTypeVariables
 
 library:
   source-dirs: src
