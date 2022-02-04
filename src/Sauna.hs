@@ -6,6 +6,7 @@ import Prelude hiding (Word, words, init)
 
 import Sauna.Data
 import Sauna.Data.State
+import Sauna.Data.Letter
 import Data.Quintuple
 import Data.List (union, (\\), intersect, nub)
 import Data.Foldable (toList)
@@ -137,9 +138,9 @@ dictionaryAlphabet (Dictionary []) = []
 init :: State
 init = State options' present' unused'
   where
-    options' = pure [A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,Aumlaut,Oumlaut]
+    options' = pure [A ..]
     present' = []
-    unused' = [A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,Aumlaut,Oumlaut]
+    unused' = [A ..]
 
 next :: State -> Word
 next state@State{unused} = let

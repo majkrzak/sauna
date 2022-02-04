@@ -10,9 +10,7 @@ import Data.Quintuple
 import Prelude hiding (Word)
 import Data.Foldable (toList)
 import Data.Wrapper
-
-data Letter = A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z|Aumlaut|Oumlaut
-  deriving Eq
+import Sauna.Data.Letter
 
 newtype Word = Word (Quintuple Letter)
 
@@ -24,66 +22,6 @@ data Color = Black | Gray | Yellow | Green
 newtype Response = Response (Quintuple Color)
   deriving Eq
 
-instance Show Letter where
-  show A = "A"
-  show B= "B"
-  show C="C"
-  show D="D"
-  show E="E"
-  show F="F"
-  show G="G"
-  show H="H"
-  show I="I"
-  show J="J"
-  show K="K"
-  show L="L"
-  show M="M"
-  show N="N"
-  show O="O"
-  show P="P"
-  show Q="Q"
-  show R="R"
-  show S="S"
-  show T="T"
-  show U="U"
-  show V="V"
-  show W="W"
-  show X="X"
-  show Y="Y"
-  show Z="Z"
-  show Aumlaut="Ä"
-  show Oumlaut="Ö"
-
-instance Read Letter where
-  readsPrec _ ('A':r) = [(A,r)]
-  readsPrec _ ('B':r) = [(B,r)]
-  readsPrec _ ('C':r) = [(C,r)]
-  readsPrec _ ('D':r) = [(D,r)]
-  readsPrec _ ('E':r) = [(E,r)]
-  readsPrec _ ('F':r) = [(F,r)]
-  readsPrec _ ('G':r) = [(G,r)]
-  readsPrec _ ('H':r) = [(H,r)]
-  readsPrec _ ('I':r) = [(I,r)]
-  readsPrec _ ('J':r) = [(J,r)]
-  readsPrec _ ('K':r) = [(K,r)]
-  readsPrec _ ('L':r) = [(L,r)]
-  readsPrec _ ('M':r) = [(M,r)]
-  readsPrec _ ('N':r) = [(N,r)]
-  readsPrec _ ('O':r) = [(O,r)]
-  readsPrec _ ('P':r) = [(P,r)]
-  readsPrec _ ('Q':r) = [(Q,r)]
-  readsPrec _ ('R':r) = [(R,r)]
-  readsPrec _ ('S':r) = [(S,r)]
-  readsPrec _ ('T':r) = [(T,r)]
-  readsPrec _ ('U':r) = [(U,r)]
-  readsPrec _ ('V':r) = [(V,r)]
-  readsPrec _ ('W':r) = [(W,r)]
-  readsPrec _ ('X':r) = [(X,r)]
-  readsPrec _ ('Y':r) = [(Y,r)]
-  readsPrec _ ('Z':r) = [(Z,r)]
-  readsPrec _ ('Ä':r) = [(Aumlaut,r)]
-  readsPrec _ ('Ö':r) = [(Oumlaut,r)]
-  readsPrec _ _ = []
 
 instance Show Word where
   show (Word w) = foldMap show $ toList w

@@ -1,6 +1,6 @@
 module Sauna.Data.State where
 
-import Sauna.Data (Letter)
+import Sauna.Data.Letter
 
 
 import Data.Quintuple (Quintuple)

@@ -17,8 +17,7 @@ main = do
   loop init
   where
     loop state = do
-      hPrint stderr state
-      stats state
+      --stats state
       let word = next state
       print word
       hFlush stdout
@@ -32,6 +31,7 @@ main = do
 
 stats :: State -> IO ()
 stats state = do
+  hPrint stderr state
   hPutStr stderr "solutionFilter: :"
   hPrint stderr $ length $ filter (solutionFilter state) $ unwrap dictionary
   hPrint stderr $ filter (solutionFilter state) $ unwrap dictionary
