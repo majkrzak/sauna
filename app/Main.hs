@@ -3,7 +3,8 @@
 module Main where
 
 import Sauna
-import Sauna.Data
+import Sauna.Data.Color
+import Sauna.Data.Response
 import Sauna.Utils
 
 import Prelude hiding (Word, init)

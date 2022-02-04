@@ -4,7 +4,8 @@
 module Sauna where
 import Prelude hiding (Word, words, init)
 
-import Sauna.Data
+import Sauna.Data.Response
+import Sauna.Data.Color
 import Sauna.Data.State
 import Sauna.Data.Letter
 import Sauna.Data.Word
