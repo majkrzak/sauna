@@ -7,13 +7,13 @@ import Prelude hiding (Word, words, init)
 import Sauna.Data
 import Sauna.Data.State
 import Sauna.Data.Letter
+import Sauna.Data.Word
 import Data.Quintuple
 import Data.List (union, (\\), intersect, nub)
 import Data.Foldable (toList)
 import Data.FileEmbed (embedFile)
 import Data.ByteString.UTF8 (toString)
 import Control.Applicative (liftA3, liftA2)
-import Control.Monad (filterM)
 import Data.Wrapper
 
 --data State = State

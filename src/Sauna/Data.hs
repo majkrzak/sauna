@@ -1,6 +1,5 @@
 
 
-{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 
 module Sauna.Data where
@@ -11,8 +10,9 @@ import Prelude hiding (Word)
 import Data.Foldable (toList)
 import Data.Wrapper
 import Sauna.Data.Letter
+import Sauna.Data.Word
 
-newtype Word = Word (Quintuple Letter)
+
 
 newtype Dictionary = Dictionary [Word]
 
@@ -23,25 +23,7 @@ newtype Response = Response (Quintuple Color)
   deriving Eq
 
 
-instance Show Word where
-  show (Word w) = foldMap show $ toList w
 
-instance Read Word where
-  readsPrec _ (l1:l2:l3:l4:l5:r) = case (do
-      _l1 <- readMaybe [l1]
-      _l2 <- readMaybe [l2]
-      _l3 <- readMaybe [l3]
-      _l4 <- readMaybe [l4]
-      _l5 <- readMaybe [l5]
-      return $ Word $ Quintuple (_l1, _l2, _l3, _l4, _l5)
-    ) of
-      Just w -> [(w,r)]
-      Nothing -> []
-    where readMaybe :: (Read a) => String -> Maybe a
-          readMaybe s = case reads s of
-                        [(x, "")] -> Just x
-                        _ -> Nothing
-  readsPrec _ _ = []
 
 instance Show Dictionary where
   show (Dictionary l) = foldl (\ws w -> ws <> "\n" <> show w) "" l
@@ -89,6 +71,6 @@ instance Read Response where
 
 
 instance Wrapper Dictionary [Word]
-instance Wrapper Word (Quintuple Letter)
+
 instance Wrapper Response (Quintuple Color)
 
