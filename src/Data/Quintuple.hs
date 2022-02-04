@@ -1,5 +1,14 @@
 module Data.Quintuple where
 
+import Data.Eq (Eq)
+import Data.Functor (Functor)
+import Text.Read (Read)
+import Text.Show (Show)
+import Data.Foldable (Foldable(foldMap))
+import Control.Applicative (Applicative(pure,(<*>)))
+import Data.Monoid ((<>))
+
+
 newtype Quintuple t = Quintuple (t, t, t, t, t)
   deriving (Functor, Eq, Show, Read)
 

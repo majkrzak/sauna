@@ -4,6 +4,7 @@ import Sauna.Data.Letter
 
 
 import Data.Quintuple (Quintuple)
+import Text.Show (Show)
 
 
 data State = State

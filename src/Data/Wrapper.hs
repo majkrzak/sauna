@@ -1,6 +1,3 @@
-{-# LANGUAGE DefaultSignatures #-}
-{-# LANGUAGE FunctionalDependencies #-}
-
 module Data.Wrapper where
 
 import Data.Coerce (coerce, Coercible)

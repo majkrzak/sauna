@@ -18,6 +18,9 @@ default-extensions:
 - GeneralizedNewtypeDeriving
 - OverloadedStrings
 - ScopedTypeVariables
+- NoImplicitPrelude
+- DefaultSignatures
+- FunctionalDependencies
 
 library:
   source-dirs: src
