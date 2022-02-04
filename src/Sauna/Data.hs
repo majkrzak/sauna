@@ -11,10 +11,10 @@ import Data.Foldable (toList)
 import Data.Wrapper
 import Sauna.Data.Letter
 import Sauna.Data.Word
+import Sauna.Data.Dictionary
 
 
 
-newtype Dictionary = Dictionary [Word]
 
 data Color = Black | Gray | Yellow | Green
   deriving Eq
@@ -24,18 +24,6 @@ newtype Response = Response (Quintuple Color)
 
 
 
-
-instance Show Dictionary where
-  show (Dictionary l) = foldl (\ws w -> ws <> "\n" <> show w) "" l
-
-instance Read Dictionary where
-  readsPrec _ s = case reads s of
-                  [(x,"")] -> [(Dictionary [x],"")]
-                  [(x,"\n")] -> [(Dictionary [x],"")]
-                  [(x,'\n':_s)] -> case reads _s of
-                      [(Dictionary xs,_)] -> [(Dictionary ([x] <> xs ),"")]
-                      _ -> []
-                  _ -> []
 
 instance Show Color where
   show Black = "B"
@@ -70,7 +58,7 @@ instance Read Response where
   readsPrec _ _ = []
 
 
-instance Wrapper Dictionary [Word]
+
 
 instance Wrapper Response (Quintuple Color)
 

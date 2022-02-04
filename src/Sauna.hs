@@ -15,6 +15,7 @@ import Data.FileEmbed (embedFile)
 import Data.ByteString.UTF8 (toString)
 import Control.Applicative (liftA3, liftA2)
 import Data.Wrapper
+import Sauna.Data.Dictionary
 
 --data State = State
 -- { gray :: [Letter]
