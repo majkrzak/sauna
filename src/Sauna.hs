@@ -8,83 +8,16 @@ import Sauna.Data.State
 import Sauna.Data.Letter
 import Sauna.Data.Word
 import Data.Quintuple
-import Data.List (union, (\\), intersect, nub, sort)
-import Data.Foldable (toList)
+import Data.List (union, (\\), intersect, nub, sort, sortBy)
+import Data.Foldable (toList, maximumBy)
 import Data.FileEmbed (embedFile)
 import Data.ByteString.UTF8 (toString)
 import Control.Applicative (liftA3, liftA2)
 import Data.Wrapper
 import Sauna.Data.Dictionary
+import Data.Monoid (Sum(Sum), getSum)
 
---data State = State
--- { gray :: [Letter]
--- , yellow :: [Letter]
--- , green :: Quintuple (Maybe Letter)
--- , solution :: Quintuple [Letter]
--- }
---
---initialState = State
--- { gray = [A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,Aumlaut,Oumlaut]
--- , yellow = []
--- , green = Quintuple (Nothing, Nothing, Nothing, Nothing, Nothing)
--- , solution = pure [A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,Aumlaut,Oumlaut]
--- }
---
---
 
---
---
---update :: State -> Word -> Response -> State
---update
---  State {..}
---  (Word word)
---  (Response response)
---  = State
---  { gray =  gray \\ toList word
---  , yellow = yellow `union` foldMap (\case
---        (x, Yellow) -> [x]
---        _ -> []
---     ) (zip (toList word) (toList response))
---  , green = fmap (\case
---        ( _, _,Just letter) -> Just letter
---        (letter, Green, Nothing) -> Just letter
---        _ -> Nothing
---     ) (liftA3 (,,) word response green)
---  , solution = fmap (\case
---       (_,_,[l]) -> [l]
---       (l,Green,_) -> [l]
---       (l,Yellow,d) -> filter (\l' -> l' `notElem` foldMap (\case
---           (l'', Black) -> [l'']
---           (_, _) -> []
---         ) (liftA2 (,) word response)) (d \\ [l])
---       (_,Black,d) -> filter (\l' -> l' `notElem` foldMap (\case
---           (l'', Black) -> [l'']
---           (_, _) -> []
---         ) (liftA2 (,) word response)) d
---       _ -> []
---     ) (liftA3 (,,) word response solution)
---  }
---
---next :: State -> Word
---next
--- State {..}
--- = head (grayDictionary <> solutionDictionary)
--- where
---   grayDictionary = filter (
---        \(Word w) -> (5 ==) $ length $ intersect gray $ toList w
---     ) $ coerce dictionary
---   solutionDictionary = filter (
---        \(Word w)
---          -> all (\(d,l) -> l `elem` d) (liftA2 (,) solution w)
---          && all (`elem` w) yellow
---     )$ coerce dictionary
-
---
---dictionary :: Dictionary
---dictionary = read $ toString $(embedFile "dict.txt")
---
---
---
 ------------
 ---- Filters
 ------------
@@ -226,6 +159,7 @@ options state = foldl kernel (pure fullAlphabet)  (unwrap state)
 type WordFilter = Word -> Bool 
 
 -- | Filters possible solutions.
+-- TODO: simplify
 solutionFilter :: State -> WordFilter
 solutionFilter state word' = presentFilter (present state)  word' && optionsFilter (options state) word'
   where
@@ -237,3 +171,30 @@ solutionFilter state word' = presentFilter (present state)  word' && optionsFilt
         coverage [] _ = True
     optionsFilter :: Quintuple Alphabet -> WordFilter
     optionsFilter opts word = all (uncurry elem) (liftA2 (,) (unwrap word) (unwrap <$> opts))
+
+-- | Type for ordering dictionaries.
+type WordOrdering = Word -> Word -> Ordering
+
+-- | Orders Words by count of unused Letters in common with solution.
+-- TODO: simplify
+overlapOrdering :: State -> WordOrdering
+overlapOrdering state a b = compare (score a) (score b)
+  where
+    score :: Word -> Int
+    score word = getSum $ foldMap score' (filter (solutionFilter state) (unwrap fullDictionary))
+      where
+        score' :: Word -> Sum Int
+        score' word' = foldMap score'' (nub (toList (unwrap word')) `intersect` unwrap (unused state))
+          where
+            score'' :: Letter -> Sum Int
+            score'' l = Sum $ length (filter (l==) (toList (unwrap word)))
+
+
+init :: State
+init = wrap []
+
+next :: State -> Word
+next state = maximumBy (overlapOrdering state) (unwrap fullDictionary)
+
+update :: State -> Word -> Response -> State
+update state word response = wrap (unwrap state <> [(word,response)])
