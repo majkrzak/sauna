@@ -184,6 +184,7 @@ fullAlphabet = wrap [A ..]
 fullDictionary :: Dictionary
 fullDictionary = read $ toString $(embedFile "dict.txt")
 
+
 -- | Get Alphabet of unused Letters for given State.
 unused :: State -> Alphabet
 unused = wrap . (unwrap fullAlphabet \\) . foldl union [] . fmap (toList . unwrap . fst) . unwrap
@@ -202,3 +203,28 @@ present = foldl kernel (wrap []) . unwrap
             (letter, Yellow) -> [letter]
             (_,_) -> []
           ) (liftA2 (,) (unwrap word) (unwrap response))
+
+-- | Get Alphabets of possible letters for each position.
+-- TODO: simplify
+options :: State -> Quintuple Alphabet
+options state = foldl kernel (pure fullAlphabet)  (unwrap state)
+  where
+    kernel :: Quintuple Alphabet -> (Word, Response) -> Quintuple Alphabet
+    kernel opts (word, response) = kernel' <$> opts <*> unwrap word <*> unwrap response
+      where
+        letters :: Color -> Alphabet
+        letters color = wrap $ foldMap ( \(letter, color') -> [letter | color == color'] ) (liftA2 (,) (unwrap word) (unwrap response))
+        blacks = letters Black
+        yellows = letters Yellow
+        kernel' :: Alphabet -> Letter -> Color -> Alphabet
+        kernel' _ letter Green = wrap [letter]
+        kernel' opt@(Alphabet [_]) _ _ = opt
+        kernel' opt letter _ =  wrap $ (unwrap opt \\ (unwrap blacks \\ unwrap yellows)) \\ [letter]
+
+
+-- | Type for filtering dictionaries.
+type WordFilter = Word -> Bool 
+
+-- | Filters possible solutions.
+solutionFilter :: State -> WordFilter
+solutionFilter state = undefined
