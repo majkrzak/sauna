@@ -227,4 +227,13 @@ type WordFilter = Word -> Bool
 
 -- | Filters possible solutions.
 solutionFilter :: State -> WordFilter
-solutionFilter state = undefined
+solutionFilter state word' = presentFilter (present state)  word' && optionsFilter (options state) word'
+  where
+    presentFilter :: Alphabet -> WordFilter
+    presentFilter alphabet word = coverage (unwrap alphabet) $ toList $ unwrap word
+      where
+        coverage :: [Letter] -> [Letter] -> Bool
+        coverage (l:ls) ws = (l `elem` ws) && coverage ls (ws\\[l])
+        coverage [] _ = True
+    optionsFilter :: Quintuple Alphabet -> WordFilter
+    optionsFilter opts word = all (uncurry elem) (liftA2 (,) (unwrap word) (unwrap <$> opts))
