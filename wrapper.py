@@ -12,7 +12,7 @@ sleep(1)
 
 while True:
     try:
-        with Popen(['/home/majkrzak/Development/sauna/.stack-work/dist/x86_64-linux-tinfo6/Cabal-3.2.1.0/build/sauna-exe/sauna-exe'], stdout=PIPE, stdin=PIPE) as proc:
+        with Popen(['/usr/bin/env','stack','exec','sauna-exe'], stdout=PIPE, stdin=PIPE) as proc:
           line = 1
           while True:
             guess = proc.stdout.readline().decode().rstrip()
