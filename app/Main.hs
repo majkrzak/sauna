@@ -58,6 +58,10 @@ stats state = do
     hPutStr stderr "solutionFilter: :"
     hPrint stderr $ length $ filter (solutionFilter state) $ unwrap fullDictionary
     hPrint stderr $ filter (solutionFilter state) $ unwrap fullDictionary
+    hPutStr stderr "options:        :"
+    hPrint stderr $ options state
+    hPutStr stderr "unused:         :"
+    hPrint stderr $ unused state
 --  hPutStr stderr "presentFilter:  :"
 --  hPrint stderr $ length $ filter (presentFilter $ present state) $ unwrap dictionary
 --  hPrint stderr $ filter (presentFilter $ present state) $ unwrap dictionary

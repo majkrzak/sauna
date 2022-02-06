@@ -152,7 +152,7 @@ options state = foldl kernel (pure fullAlphabet)  (unwrap state)
         kernel' :: Alphabet -> Letter -> Color -> Alphabet
         kernel' _ letter Green = wrap [letter]
         kernel' opt@(Alphabet [_]) _ _ = opt
-        kernel' opt letter _ =  wrap $ (unwrap opt \\ (unwrap blacks \\ unwrap yellows)) \\ [letter]
+        kernel' opt letter _ =  wrap $ (unwrap opt \\ (nub (unwrap blacks) \\ unwrap yellows)) \\ [letter]
 
 
 -- | Type for filtering dictionaries.
