@@ -178,17 +178,17 @@ type WordOrdering = Word -> Word -> Ordering
 -- | Orders Words by count of unused Letters in common with solution.
 -- TODO: simplify
 overlapOrdering :: State -> WordOrdering
-overlapOrdering state a b = compare (score a) (score b)
-  where
-    score :: Word -> Int
-    score word = getSum $ foldMap score' (filter (solutionFilter state) (unwrap fullDictionary))
-      where
-        score' :: Word -> Sum Int
-        score' word' = foldMap score'' (nub (toList (unwrap word')) `intersect` unwrap (unused state))
-          where
-            score'' :: Letter -> Sum Int
-            score'' l = Sum $ length (filter (l==) (toList (unwrap word)))
+overlapOrdering state a b = compare (overlapScore state a) (overlapScore state b)
 
+-- | Counts unused letters form Word in solution Dictionary.
+overlapScore :: State -> Word -> Sum Int
+overlapScore state word = foldMap score' (filter (solutionFilter state) (unwrap fullDictionary))
+  where
+    score' :: Word -> Sum Int
+    score' word' = foldMap score'' (unwrap (unused state) `intersect` toList (unwrap word'))
+      where
+        score'' :: Letter -> Sum Int
+        score'' l = Sum $ length (filter (l==) (nub (toList (unwrap word))))
 
 init :: State
 init = wrap []
