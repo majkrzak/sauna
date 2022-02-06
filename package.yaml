@@ -27,6 +27,7 @@ default-extensions:
 ghc-options:
 - -Wall
 - -fno-warn-orphans
+- -O2
 
 
 library:
