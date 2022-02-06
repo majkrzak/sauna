@@ -11,10 +11,11 @@ import Data.String (String)
 import Data.Foldable (foldMap, toList)
 import Control.Monad (return)
 import Data.Function ((.))
+import Data.Ord (Ord)
 
 
 newtype Word = Word (Quintuple Letter)
-  deriving (Eq)
+  deriving (Eq, Ord)
 
 instance Wrapper Word (Quintuple Letter)
 

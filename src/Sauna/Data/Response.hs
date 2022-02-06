@@ -11,11 +11,12 @@ import Data.String (String)
 import Data.Foldable (foldMap, toList)
 import Data.Function ((.))
 import Control.Monad (return)
+import Data.Ord (Ord)
 
 
 
 newtype Response = Response (Quintuple Color)
-  deriving Eq
+  deriving (Eq, Ord)
 
 instance Wrapper Response (Quintuple Color)
 

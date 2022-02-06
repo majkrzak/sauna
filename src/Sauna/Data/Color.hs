@@ -3,9 +3,11 @@ module Sauna.Data.Color where
 import Data.Eq (Eq)
 import Text.Read (Read(readsPrec))
 import Text.Show (Show(show))
+import Prelude (Enum, Bounded)
+import Data.Ord (Ord)
 
 data Color = Black | Yellow | Green
-  deriving Eq
+  deriving (Eq, Ord, Enum, Bounded)
 
 instance Show Color where
   show Black = "B"

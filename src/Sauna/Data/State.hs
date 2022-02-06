@@ -6,8 +6,9 @@ import Sauna.Data.Response (Response)
 import Data.Eq (Eq)
 import Text.Read (Read)
 import Data.Wrapper (Wrapper)
+import Data.Ord (Ord)
 
 newtype State = State [(Word, Response)]
-  deriving (Eq, Show, Read)
+  deriving (Eq,Ord, Show, Read)
 
 instance Wrapper State [(Word, Response)]

@@ -8,10 +8,11 @@ import Data.Foldable (Foldable(foldMap))
 import Control.Applicative (Applicative(pure,(<*>)))
 import Data.Monoid ((<>))
 import Data.Wrapper (Wrapper)
+import Data.Ord (Ord)
 
 
 newtype Quintuple t = Quintuple (t, t, t, t, t)
-  deriving (Functor, Eq, Show, Read)
+  deriving (Functor, Eq, Ord, Show, Read)
 
 instance Wrapper (Quintuple t) (t, t, t, t, t)
 
