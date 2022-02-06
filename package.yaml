@@ -9,6 +9,7 @@ dependencies:
 - file-embed
 - bytestring
 - utf8-string
+- containers
 
 default-extensions:
 - RecordWildCards
@@ -52,3 +53,7 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - sauna
+    - hspec
+    - hspec-contrib
+    - QuickCheck
+    - HUnit

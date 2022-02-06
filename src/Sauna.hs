@@ -194,13 +194,17 @@ init :: State
 init = wrap []
 
 next :: State -> Word
-next (State []) = read "SUKIA"
-next (State [(Word(Quintuple(S,U,K,I,A)),_)]) = read "EHTYÄ"
 next state =
-  if length (filter (solutionFilter state) (unwrap fullDictionary)) > 1 then
-    maximumBy (overlapOrdering state) (unwrap fullDictionary)
+  if length solutionDictionary > 1 then
+    if overlapScore state maxOverlap == 0 then
+       head solutionDictionary
+    else
+      maxOverlap
   else
-    head (filter (solutionFilter state) (unwrap fullDictionary))
+    head solutionDictionary
+  where
+    maxOverlap = maximumBy (overlapOrdering state) (unwrap fullDictionary)
+    solutionDictionary = filter (solutionFilter state) (unwrap fullDictionary)
 
 update :: State -> Word -> Response -> State
 update state word response = wrap (unwrap state <> [(word,response)])
