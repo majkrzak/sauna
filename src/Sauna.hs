@@ -8,14 +8,13 @@ import Sauna.Data.State
 import Sauna.Data.Letter
 import Sauna.Data.Word
 import Data.Quintuple
-import Data.List (union, (\\), intersect, nub, sort, sortBy)
-import Data.Foldable (toList, maximumBy, minimumBy)
+import Data.List (union, (\\), nub)
+import Data.Foldable (toList, minimumBy)
 import Data.FileEmbed (embedFile)
 import Data.ByteString.UTF8 (toString)
-import Control.Applicative (liftA3, liftA2)
+import Control.Applicative (liftA2)
 import Data.Wrapper
 import Sauna.Data.Dictionary
-import Data.Monoid (Sum(Sum), getSum)
 import Data.Function.Memoize (memoize)
 import Sauna.Preprocessed (preprocessed)
 
@@ -31,7 +30,7 @@ fullDictionary = read $ toString $(embedFile "dict.txt")
 unused :: State -> Alphabet
 unused = wrap . (unwrap fullAlphabet \\) . foldl union [] . fmap (toList . unwrap . fst) . unwrap
 
--- | Get Alphabet of letters present in the final solution.
+-- | Get Alphabet of letters present in the final solution for given State.
 -- Note some letter may occur multiple times!
 -- TODO: simplify
 present :: State -> Alphabet
@@ -90,29 +89,13 @@ solutionDictionary = memoize $ \case
 -- | Type for ordering dictionaries.
 type WordOrdering = Word -> Word -> Ordering
 
--- | Orders Words by count of unused Letters in common with solution.
--- TODO: simplify
-overlapOrdering :: State -> WordOrdering
-overlapOrdering state a b = compare (overlapScore state a) (overlapScore state b)
-
--- | Counts unused letters form Word in solution Dictionary.
-overlapScore :: State -> Word -> Sum Int
-overlapScore state word = foldMap score' (filter (solutionFilter state) (unwrap fullDictionary))
-  where
-    score' :: Word -> Sum Int
-    score' word' = foldMap score'' (unwrap (unused state) `intersect` toList (unwrap word'))
-      where
-        score'' :: Letter -> Sum Int
-        score'' l = Sum $ length (filter (l==) (nub (toList (unwrap word))))
-
-
 -- | Orders Words by count of worst case solutions.
 eliminationOrdering :: State -> WordOrdering
 eliminationOrdering state a b =  compare (eliminationScore state a) (eliminationScore state b)
 
 -- | Counts solutions in worst case scenario.
 eliminationScore :: State -> Word -> Int
-eliminationScore state word = maximum [length (unwrap (solutionDictionary (update state word response))) | response <- [Response (Quintuple (x1,x2,x3,x4,x5)) | x1 <- [Black ..], x2 <- [Black ..],x3 <- [Black ..],x4 <- [Black ..],x5 <- [Black ..]]]
+eliminationScore state word = maximum [length (unwrap (solutionDictionary (next state (word,response)))) | response <- [Response (Quintuple (x1,x2,x3,x4,x5)) | x1 <- [Black ..], x2 <- [Black ..],x3 <- [Black ..],x4 <- [Black ..],x5 <- [Black ..]]]
 
 initialize :: State
 initialize = wrap []
@@ -130,5 +113,5 @@ guess = memoize $ \state ->
 prev :: State -> State
 prev = wrap . init . unwrap
 
-update :: State -> Word -> Response -> State
-update state word response = wrap (unwrap state <> [(word,response)])
+next :: State -> (Word, Response) -> State
+next state (word,response) = wrap (unwrap state <> [(word,response)])

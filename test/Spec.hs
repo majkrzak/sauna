@@ -18,7 +18,7 @@ main :: IO ()
 main = hspec $ do
   describe "Sauna.options" $ do
     it "return everything for empty state" $ do
-      options init `shouldBe` pure fullAlphabet
+      options initialize `shouldBe` pure fullAlphabet
     it "handles solo letters correcly" $ do
       options
         (State [(Word (Quintuple (A,B,C,D,E)),Response (Quintuple (Green,Yellow,Black,Black,Black)))])
