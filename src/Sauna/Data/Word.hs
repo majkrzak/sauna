@@ -12,6 +12,7 @@ import Data.Foldable (foldMap, toList)
 import Control.Monad (return)
 import Data.Function ((.))
 import Data.Ord (Ord)
+import Data.Function.Memoize (deriveMemoizable)
 
 
 newtype Word = Word (Quintuple Letter)
@@ -40,4 +41,4 @@ instance Read Word where
   readsPrec _ _ = []
 
 
-
+deriveMemoizable ''Word

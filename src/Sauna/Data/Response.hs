@@ -13,6 +13,7 @@ import Data.Function ((.))
 import Control.Monad (return)
 import Data.Ord (Ord)
 
+import Data.Function.Memoize (deriveMemoizable)
 
 
 newtype Response = Response (Quintuple Color)
@@ -41,7 +42,8 @@ instance Read Response where
                         [(x, "")] -> Just x
                         _ -> Nothing
   readsPrec _ _ = []
-
+  
+deriveMemoizable ''Response
 
 
 

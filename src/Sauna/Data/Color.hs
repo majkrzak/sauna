@@ -5,6 +5,7 @@ import Text.Read (Read(readsPrec))
 import Text.Show (Show(show))
 import Prelude (Enum, Bounded)
 import Data.Ord (Ord)
+import Data.Function.Memoize (deriveMemoizable)
 
 data Color = Black | Yellow | Green
   deriving (Eq, Ord, Enum, Bounded)
@@ -19,3 +20,5 @@ instance Read Color where
   readsPrec _ ('Y':r) = [(Yellow,r)]
   readsPrec _ ('G':r) = [(Green,r)]
   readsPrec _ _ = []
+
+deriveMemoizable ''Color

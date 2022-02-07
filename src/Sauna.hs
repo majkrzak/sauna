@@ -1,5 +1,5 @@
 module Sauna where
-import Prelude hiding (Word, words, init)
+import Prelude hiding (Word, words)
 
 import Sauna.Data.Alphabet
 import Sauna.Data.Response
@@ -16,6 +16,8 @@ import Control.Applicative (liftA3, liftA2)
 import Data.Wrapper
 import Sauna.Data.Dictionary
 import Data.Monoid (Sum(Sum), getSum)
+import Data.Function.Memoize (memoize)
+import Sauna.Preprocessed (preprocessed)
 
 
 fullAlphabet :: Alphabet
@@ -81,7 +83,9 @@ solutionFilter state word' = presentFilter (present state)  word' && optionsFilt
 
 -- | Dictionary of valid solutions for given State.
 solutionDictionary :: State -> Dictionary
-solutionDictionary state = wrap $ filter (solutionFilter state) $ unwrap fullDictionary
+solutionDictionary = memoize $ \case
+  State [] -> fullDictionary
+  state -> wrap $ filter (solutionFilter state) $ unwrap $ solutionDictionary $ prev state
 
 -- | Type for ordering dictionaries.
 type WordOrdering = Word -> Word -> Ordering
@@ -110,21 +114,21 @@ eliminationOrdering state a b =  compare (eliminationScore state a) (elimination
 eliminationScore :: State -> Word -> Int
 eliminationScore state word = maximum [length (unwrap (solutionDictionary (update state word response))) | response <- [Response (Quintuple (x1,x2,x3,x4,x5)) | x1 <- [Black ..], x2 <- [Black ..],x3 <- [Black ..],x4 <- [Black ..],x5 <- [Black ..]]]
 
-init :: State
-init = wrap []
+initialize :: State
+initialize = wrap []
 
-next :: State -> Word
-next state =
-  if length solutionDictionary > 1 then
-    if overlapScore state maxOverlap == 0 then
-       head solutionDictionary
+guess :: State -> Word
+guess = memoize $ \state -> 
+    if length (unwrap (solutionDictionary state)) > 1 then
+      case preprocessed state of
+        Nothing -> minimumBy (eliminationOrdering state) (unwrap fullDictionary)
+        Just word -> word
     else
-      maxOverlap
-  else
-    head solutionDictionary
-  where
-    maxOverlap = maximumBy (overlapOrdering state) (unwrap fullDictionary)
-    solutionDictionary = filter (solutionFilter state) (unwrap fullDictionary)
+      head (unwrap (solutionDictionary state))
+
+
+prev :: State -> State
+prev = wrap . init . unwrap
 
 update :: State -> Word -> Response -> State
 update state word response = wrap (unwrap state <> [(word,response)])

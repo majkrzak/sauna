@@ -10,6 +10,7 @@ dependencies:
 - bytestring
 - utf8-string
 - containers
+- memoize
 
 default-extensions:
 - RecordWildCards
@@ -43,6 +44,7 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - sauna
+    - parallel-io
 
 tests:
   sauna-test:
