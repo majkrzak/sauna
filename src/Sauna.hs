@@ -8,11 +8,11 @@ import Sauna.Data.State
 import Sauna.Data.Letter
 import Sauna.Data.Word
 import Data.Quintuple
-import Data.List (union, (\\), nub)
+import Data.List (union, (\\), nub, inits)
 import Data.Foldable (toList, minimumBy)
 import Data.FileEmbed (embedFile)
 import Data.ByteString.UTF8 (toString)
-import Control.Applicative (liftA2)
+import Control.Applicative (liftA2, liftA3)
 import Data.Wrapper
 import Sauna.Data.Dictionary
 import Data.Function.Memoize (memoize)
@@ -115,3 +115,34 @@ prev = wrap . init . unwrap
 
 next :: State -> (Word, Response) -> State
 next state (word,response) = wrap (unwrap state <> [(word,response)])
+
+-- | Checks guess against the solution.
+-- TODO: do in the sane way
+check :: Word -> Word -> Response
+check (Word (Quintuple(a1,a2,a3,a4,a5))) (Word (Quintuple(g1,g2,g3,g4,g5))) = Response $ Quintuple (r1,r2,r3,r4,r5)
+   where
+    r1
+      | a1 == g1 = Green
+      | a1 `notElem` [a1,a2,a3,a4,a5] = Black
+      | length (filter (==g1) [a1,a2,a3,a4,a5]) > length (filter (==g1) []) + length (filter (==(g1,Green)) [(g2,r2),(g3,r3),(g4,r4),(g5,r5)]) = Yellow
+      | otherwise = Black
+    r2
+      | a2 == g2 = Green
+      | a2 `notElem` [a1,a2,a3,a4,a5] = Black
+      | length (filter (==g2) [a1,a2,a3,a4,a5]) > length (filter (==g2) [g1]) + length (filter (==(g2,Green)) [(g3,r3),(g4,r4),(g5,r5)]) = Yellow
+      | otherwise = Black
+    r3
+      | a3 == g3 = Green
+      | a3 `notElem` [a1,a2,a3,a4,a5] = Black
+      | length (filter (==g3) [a1,a2,a3,a4,a5]) > length (filter (==g3) [g1,g2]) + length (filter (==(g3,Green)) [(g4,r4),(g5,r5)]) = Yellow
+      | otherwise = Black
+    r4
+      | a4 == g4 = Green
+      | a4 `notElem` [a1,a2,a3,a4,a5] = Black
+      | length (filter (==g4) [a1,a2,a3,a4,a5]) > length (filter (==g4) [g1,g2,g3]) + length (filter (==(g4,Green)) [(g5,r5)]) = Yellow
+      | otherwise = Black
+    r5
+      | a5 == g5 = Green
+      | a5 `notElem` [a1,a2,a3,a4,a5] = Black
+      | length (filter (==g5) [a1,a2,a3,a4,a5]) > length (filter (==g5) [g1,g2,g3,g4]) + length (filter (==(g5,Green)) []) = Yellow
+      | otherwise = Black
