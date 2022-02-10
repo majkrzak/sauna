@@ -1,6 +1,6 @@
 module Data.Wrapper where
 
-import Data.Coerce (coerce, Coercible)
+import Data.Coerce (Coercible, coerce)
 
 
 class Wrapper a b | a -> b , b -> a where

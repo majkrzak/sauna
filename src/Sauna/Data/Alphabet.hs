@@ -1,10 +1,10 @@
 module Sauna.Data.Alphabet where
 
+import Data.Eq (Eq)
+import Data.Wrapper (Wrapper)
 import Sauna.Data.Letter (Letter)
 import Text.Read (Read)
 import Text.Show (Show)
-import Data.Wrapper (Wrapper)
-import Data.Eq (Eq)
 
 
 newtype Alphabet = Alphabet [Letter]
