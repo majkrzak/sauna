@@ -12,12 +12,14 @@ sleep(1)
 
 while True:
     try:
-        with Popen(['/usr/bin/env','stack','exec','sauna-exe'], stdout=PIPE, stdin=PIPE) as proc:
+        with Popen(['/usr/bin/env','stack','exec','sauna-solver'], stdout=PIPE, stdin=PIPE) as proc:
           line = 1
           while True:
             guess = proc.stdout.readline().decode().rstrip()
             elem = driver.find_element_by_tag_name("body")
-            elem.send_keys(guess)
+            for key in guess:
+                elem.send_keys(key)
+                sleep(0.05)
             elem.send_keys(Keys.ENTER)
             sleep(0.2)
             result = "".join([ {

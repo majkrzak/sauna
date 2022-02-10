@@ -16,4 +16,11 @@ In each step, word which will reduce the set of possible solution the most is ch
 
 ### Preprocessing
 
-Entry step takes approximately 20 minutes (on single core of Intel Core i7-6700K CPU @ 4.00GHz) and approximately 30 seconds for the second step. For subsequent calls, time is negligible. This overhead is only present during the initialization, because memoization technique was used for computational heavy tasks. Even though, to speed up the initialisation, two first calls were preprocessed and hardcoded.
+Entry step takes approximately 20 minutes (on single core of Intel Core i7-6700K CPU @ 4.00GHz) and approximately 30 seconds for the second step. For subsequent calls, time is negligible. This overhead is only present during the initialization, because memoization technique was used for computational heavy tasks. Even though, to speed up the algorith, whole set off possible solutions can be preprocessed. 
+
+This can be done byh running `sanuli-generator` and saving the output into the `cache.txt`.
+
+
+## Build and run
+
+To build and run the `sanuli-solver` run `stack build --exec sauna-solver`.
