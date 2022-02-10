@@ -8,3 +8,8 @@ find ../* -name '*.hs' -exec \
     --write-mode inplace \
     {} \
   \;
+
+find ../* -name '*.py' -exec \
+  black \
+    {} \
+  \;
